@@ -1,0 +1,1 @@
+Assets go here. Add a validated waste_model.tflite for real on-device inference.
