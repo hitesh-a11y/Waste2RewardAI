@@ -14,28 +14,52 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
+
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
           packages: platform-tools
+
       - name: Install Android SDK
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
       - name: Install Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.11.1"
+
       - name: Build debug APK
         run: gradle assembleDebug --no-daemon --stacktrace
-      - name: Upload APK
+
+      - name: Sign APK for direct installation
+        run: |
+          keytool -genkeypair -v \
+            -keystore "$RUNNER_TEMP/greenplate-release.jks" \
+            -storepass "greenplate" \
+            -keypass "greenplate" \
+            -alias "greenplate" \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Green Plate, OU=Hackathon, O=Waste2Reward, L=Hyderabad, ST=Telangana, C=IN"
+
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" sign \
+            --ks "$RUNNER_TEMP/greenplate-release.jks" \
+            --ks-key-alias "greenplate" \
+            --ks-pass pass:greenplate \
+            --key-pass pass:greenplate \
+            --out app/build/outputs/apk/debug/GreenPlate.apk \
+            app/build/outputs/apk/debug/app-debug.apk
+
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose app/build/outputs/apk/debug/GreenPlate.apk
+
+      - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
-          name: Waste2RewardAI-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: GreenPlate-installable-apk
+          path: app/build/outputs/apk/debug/GreenPlate.apk
           if-no-files-found: error
-
-# Hackathon APK build trigger
