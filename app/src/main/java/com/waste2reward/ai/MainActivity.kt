@@ -52,8 +52,28 @@ fun RolePicker(onRole:(Role)->Unit){
  }}
 }
 
-@Composable fun RoleCard(r:Role,onClick:()->Unit){Card(onClick=onClick,shape=RoundedCornerShape(20.dp),colors=CardDefaults.cardColors(containerColor=Color.White),modifier=Modifier.fillMaxWidth()){Row(Modifier.padding(20.dp),verticalAlignment=Alignment.CenterVertically){Text(r.icon,fontSize=34.sp);Spacer(Modifier.width(16.dp));Column(Modifier.weight(1f)){Text(r.title,fontSize=20.sp,fontWeight=FontWeight.Bold,color=Dark);Text(r.subtitle,color=Color.Gray)}Text("›",fontSize=30.sp,color=Green)}}}
-
+@Composable
+fun RoleCard(r: Role, onClick: () -> Unit) {
+    Card(
+        onClick = onClick,
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(r.icon, fontSize = 34.sp)
+            Spacer(Modifier.width(16.dp))
+            Column(Modifier.weight(1f)) {
+                Text(r.title, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Dark)
+                Text(r.subtitle, color = Color.Gray)
+            }
+            Text("›", fontSize = 30.sp, color = Green)
+        }
+    }
+}
 @Composable
 fun AuthScreen(r:Role,signup:Boolean,toggle:()->Unit,login:()->Unit){
  var name by remember{mutableStateOf("")};var email by remember{mutableStateOf("")};var pass by remember{mutableStateOf("")}
@@ -75,9 +95,9 @@ fun RoleApp(r:Role,onLogout:()->Unit){
  val labels=when(r){Role.DONOR->listOf("Home","Surplus","History","Impact","More");Role.COLLECTOR->listOf("Home","Available","Accepted","Impact","More");Role.PARTNER->listOf("Home","Jobs","Earnings","History","More")}
  Scaffold(containerColor=Bg,bottomBar={NavigationBar(containerColor=Color.White){labels.forEachIndexed{i,l->NavigationBarItem(selected=page==i,onClick={page=i},icon={Text(listOf("⌂","＋","✓","★","☰")[i],fontSize=20.sp)},label={Text(l)})}}}){p->
  when(r){
- Role.DONOR->when(page){0->DonorHome(p);1->DonorSurplus(p);2->HistoryPage("Donation history",p);3->ImpactPage("Donor impact",p);else->MorePage(r,onLogout,p)}
- Role.COLLECTOR->when(page){0->CollectorHome(p);1->AvailableFood(p);2->AcceptedFood(p);3->ImpactPage("Community impact",p);else->MorePage(r,onLogout,p)}
- Role.PARTNER->when(page){0->PartnerHome(p);1->DeliveryJobs(p);2->EarningsPage(p);3->HistoryPage("Delivery history",p);else->MorePage(r,onLogout,p)}
+ Role.DONOR->when(page){0->DonorHome(Modifier.padding(p));1->DonorSurplus(Modifier.padding(p));2->HistoryPage("Donation history",Modifier.padding(p));3->ImpactPage("Donor impact",Modifier.padding(p));else->MorePage(r,onLogout,Modifier.padding(p))}
+ Role.COLLECTOR->when(page){0->CollectorHome(Modifier.padding(p));1->AvailableFood(Modifier.padding(p));2->AcceptedFood(Modifier.padding(p));3->ImpactPage("Community impact",Modifier.padding(p));else->MorePage(r,onLogout,Modifier.padding(p))}
+ Role.PARTNER->when(page){0->PartnerHome(Modifier.padding(p));1->DeliveryJobs(Modifier.padding(p));2->EarningsPage(Modifier.padding(p));3->HistoryPage("Delivery history",Modifier.padding(p));else->MorePage(r,onLogout,Modifier.padding(p))}
  }}
 }
 
